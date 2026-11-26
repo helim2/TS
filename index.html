@@ -32,7 +32,7 @@
   #fallback a { color: #1a4fa0; font-weight: 700; }
 
   /* ===== 재미용 장식 (필요 없으면 아래 DECOR = false) ===== */
-  .pal { position: fixed; z-index: 10; width: 64px; height: 64px; bottom: calc(8px + env(safe-area-inset-bottom));
+  .pal { position: fixed; z-index: 10; width: 64px; height: 64px;
          transition: left .45s cubic-bezier(.3,1.6,.5,1), top .45s cubic-bezier(.3,1.6,.5,1), opacity .4s; cursor: pointer;
          -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
   .pal svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
@@ -109,17 +109,17 @@
     if (!DECOR) return;
     // 배치표: type(santa/rudolph/gift), side(left/right), x(가장자리에서 px), y(아래에서 px), size(px)
     var LAYOUT = [
-      { t: 'santa',   s: 'left',  x: 6,   y: 6, z: 64 },
-      { t: 'rudolph', s: 'left',  x: 66,  y: 6, z: 64 },
-      { t: 'gift',    s: 'left',  x: 128, y: 6, z: 46 },
-      { t: 'santa',   s: 'left',  x: 172, y: 6, z: 58 },
-      { t: 'rudolph', s: 'left',  x: 8,   y: 72, z: 52 },
-      { t: 'gift',    s: 'left',  x: 8,   y: 126, z: 40 },
-      { t: 'gift',    s: 'right', x: 6,   y: 6, z: 58 },
-      { t: 'gift',    s: 'right', x: 62,  y: 6, z: 46 },
-      { t: 'rudolph', s: 'right', x: 112, y: 6, z: 62 },
-      { t: 'santa',   s: 'right', x: 8,   y: 70, z: 56 },
-      { t: 'gift',    s: 'right', x: 68,  y: 54, z: 38 }
+      { t: 'santa',   x: 3,  y: 86, z: 56 },
+      { t: 'rudolph', x: 78, y: 84, z: 56 },
+      { t: 'gift',    x: 44, y: 90, z: 44 },
+      { t: 'gift',    x: 20, y: 91, z: 40 },
+      { t: 'gift',    x: 64, y: 91, z: 40 },
+      { t: 'rudolph', x: 3,  y: 62, z: 50 },
+      { t: 'santa',   x: 84, y: 64, z: 52 },
+      { t: 'gift',    x: 88, y: 42, z: 40 },
+      { t: 'rudolph', x: 4,  y: 36, z: 52 },
+      { t: 'santa',   x: 82, y: 17, z: 52 },
+      { t: 'gift',    x: 10, y: 14, z: 42 }
     ];
     var box = document.getElementById('decor'), n = 0;
     LAYOUT.forEach(function (c) {
@@ -127,7 +127,7 @@
       el.className = 'pal ' + c.t; el.id = c.t + (++n);
       el.setAttribute('role', 'img'); el.setAttribute('aria-label', { santa: '산타', rudolph: '루돌프', gift: '선물' }[c.t]);
       el.innerHTML = document.getElementById('tpl-' + c.t).innerHTML;
-      el.style[c.s] = c.x + 'px'; el.style.bottom = 'calc(' + c.y + 'px + env(safe-area-inset-bottom))';
+      el.style.left = c.x + '%'; el.style.top = c.y + '%';
       el.style.width = el.style.height = c.z + 'px';
       if (c.t === 'gift') el.style.animationDelay = (n % 5) * 0.4 + 's';
       box.appendChild(el);
