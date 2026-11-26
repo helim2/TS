@@ -30,6 +30,20 @@
     background: #f2f2f2; color: #333; display: none;
   }
   #fallback a { color: #1a4fa0; font-weight: 700; }
+
+  /* ===== 재미용 장식 (필요 없으면 아래 DECOR = false) ===== */
+  .pal { position: fixed; z-index: 10; width: 64px; height: 64px; bottom: calc(8px + env(safe-area-inset-bottom));
+         transition: left .45s cubic-bezier(.3,1.6,.5,1), top .45s cubic-bezier(.3,1.6,.5,1), opacity .4s; cursor: pointer;
+         -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  .pal svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+  .pal.run { pointer-events: none; }
+  .pal.gone { opacity: 0; }
+  #santa { left: 8px; } #rudolph { left: 78px; }
+  #gift { right: 8px; width: 56px; height: 56px; pointer-events: none; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+  .bubble { position: fixed; z-index: 11; padding: 4px 10px; background: #fff; color: #14234c; border-radius: 12px;
+            font: 700 13px/1.3 'Malgun Gothic','Apple SD Gothic Neo',sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,.25);
+            pointer-events: none; white-space: nowrap; transition: opacity .3s; }
 </style>
 </head>
 <body>
@@ -38,6 +52,36 @@
   src="https://script.google.com/macros/s/AKfycbxhecfYUF6gVfLHI21XScPUOxLWdzF2VxeuaUP5HJAbo9iVmHXCf2pFdEb5OIleP8-55g/exec"
   title="설명회 신청"
   allow="clipboard-write"></iframe>
+
+
+<div id="santa" class="pal" role="img" aria-label="산타"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <rect x="22" y="72" width="56" height="28" rx="12" fill="#d62027"/>
+  <circle cx="50" cy="54" r="21" fill="#f7cba5"/>
+  <path d="M29 56 Q31 90 50 92 Q69 90 71 56 Q61 68 50 64 Q39 68 29 56Z" fill="#fff"/>
+  <ellipse cx="43" cy="62" rx="8" ry="4.5" fill="#fff"/><ellipse cx="57" cy="62" rx="8" ry="4.5" fill="#fff"/>
+  <circle cx="42" cy="52" r="2.4" fill="#222"/><circle cx="58" cy="52" r="2.4" fill="#222"/>
+  <circle cx="50" cy="58" r="3.4" fill="#f0a08a"/>
+  <path d="M27 47 Q28 12 56 13 Q70 15 72 47Z" fill="#d62027"/>
+  <rect x="24" y="42" width="52" height="12" rx="6" fill="#fff"/>
+  <circle cx="66" cy="11" r="8" fill="#fff"/>
+</svg></div>
+<div id="rudolph" class="pal" role="img" aria-label="루돌프"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <path d="M34 34 Q24 22 20 8 M26 22 Q16 20 12 24 M30 28 Q24 18 26 10" stroke="#6b4a2f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M66 34 Q76 22 80 8 M74 22 Q84 20 88 24 M70 28 Q76 18 74 10" stroke="#6b4a2f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="27" cy="46" rx="10" ry="6" fill="#a8672a" transform="rotate(-25 27 46)"/>
+  <ellipse cx="73" cy="46" rx="10" ry="6" fill="#a8672a" transform="rotate(25 73 46)"/>
+  <ellipse cx="50" cy="60" rx="25" ry="28" fill="#b9732f"/>
+  <ellipse cx="50" cy="74" rx="16" ry="13" fill="#e8c08c"/>
+  <circle cx="40" cy="52" r="3.2" fill="#222"/><circle cx="60" cy="52" r="3.2" fill="#222"/>
+  <circle cx="50" cy="72" r="9" fill="#e5252a"/><circle cx="47" cy="69" r="2.6" fill="#ff9a9a"/>
+</svg></div>
+<div id="gift" class="pal" role="img" aria-label="선물"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <rect x="18" y="44" width="64" height="46" rx="3" fill="#1f8a4c"/>
+  <rect x="13" y="34" width="74" height="15" rx="3" fill="#27a85d"/>
+  <rect x="45" y="34" width="10" height="56" fill="#d62027"/>
+  <path d="M50 34 Q30 6 20 22 Q24 36 50 34Z" fill="#e5252a"/><path d="M50 34 Q70 6 80 22 Q76 36 50 34Z" fill="#e5252a"/>
+  <circle cx="50" cy="34" r="6" fill="#b3161c"/>
+</svg></div>
 
 <!-- 화면이 보이지 않을 때를 위한 안내 (5초 뒤에도 불러오지 못하면 표시) -->
 <div id="fallback">
@@ -53,6 +97,51 @@
     setTimeout(function () {
       if (!loaded) document.getElementById('fallback').style.display = 'block';
     }, 5000);
+  })();
+
+  // ===== 재미용: 산타/루돌프를 누르면 도망갑니다 (아무 의미 없음) =====
+  (function () {
+    var DECOR = true;                       // false 로 바꾸면 장식이 모두 사라집니다
+    var pals = document.querySelectorAll('.pal');
+    if (!DECOR) { pals.forEach(function (p) { p.style.display = 'none'; }); return; }
+    var lines = { santa: ['으악!', '잡을 수 없지롱~', '선물은 내일!', '호호호~'],
+                  rudolph: ['깜짝이야!', '코는 만지지 마!', '도망가자~', '붙잡혀도 안 줘!'] };
+    function say(el, text) {
+      var b = document.createElement('div'); b.className = 'bubble'; b.textContent = text;
+      document.body.appendChild(b);
+      var r = el.getBoundingClientRect();
+      b.style.left = Math.max(6, Math.min(window.innerWidth - b.offsetWidth - 6, r.left)) + 'px';
+      b.style.top = Math.max(6, r.top - 32) + 'px';
+      setTimeout(function () { b.style.opacity = 0; }, 900);
+      setTimeout(function () { b.remove(); }, 1300);
+    }
+    function flee(el) {
+      if (el.classList.contains('run')) return;
+      var home = { left: el.style.left, top: el.style.top, bottom: el.style.bottom };
+      var r = el.getBoundingClientRect();
+      el.classList.add('run');
+      el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.bottom = 'auto';
+      var list = lines[el.id]; say(el, list[Math.floor(Math.random() * list.length)]);
+      var hops = 3 + Math.floor(Math.random() * 2), i = 0;
+      (function hop() {
+        if (i++ >= hops) {
+          el.classList.add('gone');
+          setTimeout(function () {
+            el.style.transition = 'none';
+            el.style.left = home.left; el.style.top = home.top || ''; el.style.bottom = home.bottom || '';
+            void el.offsetWidth; el.style.transition = '';
+            el.classList.remove('gone'); el.classList.remove('run');
+          }, 1500);
+          return;
+        }
+        var w = window.innerWidth - 70, h = window.innerHeight - 70;
+        el.style.left = Math.round(Math.random() * w) + 'px';
+        el.style.top = Math.round(Math.random() * h) + 'px';
+        setTimeout(hop, 480);
+      })();
+    }
+    document.getElementById('santa').addEventListener('click', function () { flee(this); });
+    document.getElementById('rudolph').addEventListener('click', function () { flee(this); });
   })();
 </script>
 
