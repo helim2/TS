@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>설명회 신청</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+
+<!-- 홈 화면 아이콘 / 앱 이름 -->
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="설명회 신청">
+<meta name="application-name" content="설명회 신청">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; }
+  #app {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%; height: 100dvh;
+    border: 0; display: block; background: #ffffff;
+  }
+  #fallback {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    padding: 10px 16px; text-align: center;
+    font: 14px/1.4 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f2f2f2; color: #333; display: none;
+  }
+  #fallback a { color: #1a4fa0; font-weight: 700; }
+
+  /* ===== 재미용 장식 (필요 없으면 아래 DECOR = false) ===== */
+  .pal { position: fixed; z-index: 10; width: 64px; height: 64px; bottom: calc(8px + env(safe-area-inset-bottom));
+         transition: left .45s cubic-bezier(.3,1.6,.5,1), top .45s cubic-bezier(.3,1.6,.5,1), opacity .4s; cursor: pointer;
+         -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  .pal svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+  .pal.run { pointer-events: none; }
+  .pal.gone { opacity: 0; }
+  .pal.gift { pointer-events: none; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+  .bubble { position: fixed; z-index: 11; padding: 4px 10px; background: #fff; color: #14234c; border-radius: 12px;
+            font: 700 13px/1.3 'Malgun Gothic','Apple SD Gothic Neo',sans-serif; box-shadow: 0 2px 6px rgba(0,0,0,.25);
+            pointer-events: none; white-space: nowrap; transition: opacity .3s; }
+</style>
+</head>
+<body>
+
+<iframe id="app"
+  src="https://script.google.com/macros/s/AKfycbxhecfYUF6gVfLHI21XScPUOxLWdzF2VxeuaUP5HJAbo9iVmHXCf2pFdEb5OIleP8-55g/exec"
+  title="설명회 신청"
+  allow="clipboard-write"></iframe>
+
+
+
+
+
+
+<template id="tpl-santa"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <rect x="22" y="72" width="56" height="28" rx="12" fill="#d62027"/>
+  <circle cx="50" cy="54" r="21" fill="#f7cba5"/>
+  <path d="M29 56 Q31 90 50 92 Q69 90 71 56 Q61 68 50 64 Q39 68 29 56Z" fill="#fff"/>
+  <ellipse cx="43" cy="62" rx="8" ry="4.5" fill="#fff"/><ellipse cx="57" cy="62" rx="8" ry="4.5" fill="#fff"/>
+  <circle cx="42" cy="52" r="2.4" fill="#222"/><circle cx="58" cy="52" r="2.4" fill="#222"/>
+  <circle cx="50" cy="58" r="3.4" fill="#f0a08a"/>
+  <path d="M27 47 Q28 12 56 13 Q70 15 72 47Z" fill="#d62027"/>
+  <rect x="24" y="42" width="52" height="12" rx="6" fill="#fff"/>
+  <circle cx="66" cy="11" r="8" fill="#fff"/>
+</svg></template>
+<template id="tpl-rudolph"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <path d="M34 34 Q24 22 20 8 M26 22 Q16 20 12 24 M30 28 Q24 18 26 10" stroke="#6b4a2f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M66 34 Q76 22 80 8 M74 22 Q84 20 88 24 M70 28 Q76 18 74 10" stroke="#6b4a2f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="27" cy="46" rx="10" ry="6" fill="#a8672a" transform="rotate(-25 27 46)"/>
+  <ellipse cx="73" cy="46" rx="10" ry="6" fill="#a8672a" transform="rotate(25 73 46)"/>
+  <ellipse cx="50" cy="60" rx="25" ry="28" fill="#b9732f"/>
+  <ellipse cx="50" cy="74" rx="16" ry="13" fill="#e8c08c"/>
+  <circle cx="40" cy="52" r="3.2" fill="#222"/><circle cx="60" cy="52" r="3.2" fill="#222"/>
+  <circle cx="50" cy="72" r="9" fill="#e5252a"/><circle cx="47" cy="69" r="2.6" fill="#ff9a9a"/>
+</svg></template>
+<template id="tpl-gift"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <rect x="18" y="44" width="64" height="46" rx="3" fill="#1f8a4c"/>
+  <rect x="13" y="34" width="74" height="15" rx="3" fill="#27a85d"/>
+  <rect x="45" y="34" width="10" height="56" fill="#d62027"/>
+  <path d="M50 34 Q30 6 20 22 Q24 36 50 34Z" fill="#e5252a"/><path d="M50 34 Q70 6 80 22 Q76 36 50 34Z" fill="#e5252a"/>
+  <circle cx="50" cy="34" r="6" fill="#b3161c"/>
+</svg></template>
+<div id="decor"></div>
+
+<!-- 화면이 보이지 않을 때를 위한 안내 (5초 뒤에도 불러오지 못하면 표시) -->
+<div id="fallback">
+  화면이 보이지 않으면
+  <a href="https://script.google.com/macros/s/AKfycbxhecfYUF6gVfLHI21XScPUOxLWdzF2VxeuaUP5HJAbo9iVmHXCf2pFdEb5OIleP8-55g/exec" target="_top">여기를 눌러 신청 페이지로 이동</a>해 주세요.
+</div>
+
+<script>
+  (function () {
+    var frame = document.getElementById('app');
+    var loaded = false;
+    frame.addEventListener('load', function () { loaded = true; });
+    setTimeout(function () {
+      if (!loaded) document.getElementById('fallback').style.display = 'block';
+    }, 5000);
+  })();
+
+  // ===== 재미용: 산타/루돌프를 누르면 도망갑니다 (아무 의미 없음) =====
+  (function () {
+    var DECOR = true;                       // false 로 바꾸면 장식이 모두 사라집니다
+    if (!DECOR) return;
+    // 배치표: type(santa/rudolph/gift), side(left/right), x(가장자리에서 px), y(아래에서 px), size(px)
+    var LAYOUT = [
+      { t: 'santa',   s: 'left',  x: 6,   y: 6, z: 64 },
+      { t: 'rudolph', s: 'left',  x: 66,  y: 6, z: 64 },
+      { t: 'gift',    s: 'left',  x: 128, y: 6, z: 46 },
+      { t: 'santa',   s: 'left',  x: 172, y: 6, z: 58 },
+      { t: 'rudolph', s: 'left',  x: 8,   y: 72, z: 52 },
+      { t: 'gift',    s: 'left',  x: 8,   y: 126, z: 40 },
+      { t: 'gift',    s: 'right', x: 6,   y: 6, z: 58 },
+      { t: 'gift',    s: 'right', x: 62,  y: 6, z: 46 },
+      { t: 'rudolph', s: 'right', x: 112, y: 6, z: 62 },
+      { t: 'santa',   s: 'right', x: 8,   y: 70, z: 56 },
+      { t: 'gift',    s: 'right', x: 68,  y: 54, z: 38 }
+    ];
+    var box = document.getElementById('decor'), n = 0;
+    LAYOUT.forEach(function (c) {
+      var el = document.createElement('div');
+      el.className = 'pal ' + c.t; el.id = c.t + (++n);
+      el.setAttribute('role', 'img'); el.setAttribute('aria-label', { santa: '산타', rudolph: '루돌프', gift: '선물' }[c.t]);
+      el.innerHTML = document.getElementById('tpl-' + c.t).innerHTML;
+      el.style[c.s] = c.x + 'px'; el.style.bottom = 'calc(' + c.y + 'px + env(safe-area-inset-bottom))';
+      el.style.width = el.style.height = c.z + 'px';
+      if (c.t === 'gift') el.style.animationDelay = (n % 5) * 0.4 + 's';
+      box.appendChild(el);
+      if (c.t !== 'gift') el.addEventListener('click', function () { flee(el); });
+    });
+    var lines = { santa: ['으악!', '잡을 수 없지롱~', '선물은 내일!', '호호호~'],
+                  rudolph: ['깜짝이야!', '코는 만지지 마!', '도망가자~', '붙잡혀도 안 줘!'] };
+    function say(el, text) {
+      var b = document.createElement('div'); b.className = 'bubble'; b.textContent = text;
+      document.body.appendChild(b);
+      var r = el.getBoundingClientRect();
+      b.style.left = Math.max(6, Math.min(window.innerWidth - b.offsetWidth - 6, r.left)) + 'px';
+      b.style.top = Math.max(6, r.top - 32) + 'px';
+      setTimeout(function () { b.style.opacity = 0; }, 900);
+      setTimeout(function () { b.remove(); }, 1300);
+    }
+    function flee(el) {
+      if (el.classList.contains('run')) return;
+      var home = { left: el.style.left, right: el.style.right, top: el.style.top, bottom: el.style.bottom };
+      var r = el.getBoundingClientRect();
+      el.classList.add('run');
+      el.style.left = r.left + 'px'; el.style.top = r.top + 'px'; el.style.right = 'auto'; el.style.bottom = 'auto';
+      var key = el.classList.contains('santa') ? 'santa' : 'rudolph';
+      var list = lines[key]; say(el, list[Math.floor(Math.random() * list.length)]);
+      var hops = 3 + Math.floor(Math.random() * 2), i = 0;
+      (function hop() {
+        if (i++ >= hops) {
+          el.classList.add('gone');
+          setTimeout(function () {
+            el.style.transition = 'none';
+            el.style.left = home.left; el.style.right = home.right; el.style.top = home.top; el.style.bottom = home.bottom;
+            void el.offsetWidth; el.style.transition = '';
+            el.classList.remove('gone'); el.classList.remove('run');
+          }, 1500);
+          return;
+        }
+        var w = window.innerWidth - 70, h = window.innerHeight - 70;
+        el.style.left = Math.round(Math.random() * w) + 'px';
+        el.style.top = Math.round(Math.random() * h) + 'px';
+        setTimeout(hop, 480);
+      })();
+    }
+  })();
+</script>
+
+</body>
+</html>
